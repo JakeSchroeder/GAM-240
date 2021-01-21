@@ -24,10 +24,11 @@ class Matrix {
         }
         else {
             //decrement the opacity over time
-            this.alpha -= .05;
+            this.alpha -= .03;
             //if alpha goes negative set back to random value
             if (this.alpha <= 0) {
-                this.alpha = random(0, .45);
+                //this.alpha = 0
+                this.alpha = random(0, .5);
             }
         }
         //check to see if the alpha is a radnom float, if so switch the letter

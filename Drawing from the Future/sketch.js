@@ -27,12 +27,12 @@ let headFrameCounter = [];
 //p5 method invoked on start
 function setup() {
     //set global framerate for canvas
-    frameRate(14);
+    frameRate(10);
     //set size of canvas to 825 for best viewing experience
     createCanvas(innerWidth, windowHeight);
     //how many columns/rows of matrix grid
-    numCols = 80;
-    numRows = 90;
+    numCols = int(innerWidth / 15);
+    numRows = int(windowHeight / 12);
     //create nested loop to create grid of matrix on start
     for (let i = 0; i < numCols; i++) {
         let column = [];
@@ -94,13 +94,22 @@ function draw() {
                 matrix.alpha += random(0, 0.1);
             }
 
-            if (random(0, 1) < .3 && matrix.alpha > 0.93) {
-                matrix.alpha = 1;
-                let direction = 1 - 2 * int(random(0, 2));
-                if (k + 1 < numRows - 1 && i + 1 < numCols && i - 1 > 1) {
-                    columns[i + direction][k + 1].alpha = 1;
+
+            if (matrix.alpha > 0.90) {
+                if (random(0, 2) < .03) {
+                    //matrix.alpha = .5;
+                    let direction = 1 - 2 * int(random(0, 2));
+                    if (k + 2 < numRows - 2 && i + 2 < numCols - 2 && i - 1 > 2) {
+                        columns[i + direction][k + 1].alpha = .7;
+                        columns[i + 2 * direction][k + 2].alpha = 1.4;
+                    }
+                } else {
+                    if (k + 1 < numRows - 1 && k - 1 > 1 && columns[i][k + 1].alpha < matrix.alpha * 0.5) {
+                        columns[i][k + 1].alpha = matrix.alpha * 0.93;
+                    }
                 }
             }
+
 
         }
     }
