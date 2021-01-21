@@ -14,7 +14,8 @@
 //actual container of stacked matrix code
 let columns = [];
 //scale factor that loops are derived from
-let numCols, numRows;
+let numCols;
+let numRows;
 //container of items to represent first/white characters
 let heads = [];
 //mapped to first/white characters to control speed
@@ -26,29 +27,28 @@ let headFrameCounter = [];
 //p5 method invoked on start
 function setup() {
     //set global framerate for canvas
-    frameRate(12);
+    frameRate(14);
     //set size of canvas to 825 for best viewing experience
-    createCanvas(windowWidth, windowHeight);
-    //sets how many columns/rows of matrix grid
-    numCols = 60;
-    numRows = 80;
+    createCanvas(innerWidth, windowHeight);
+    //how many columns/rows of matrix grid
+    numCols = 80;
+    numRows = 90;
     //create nested loop to create grid of matrix on start
     for (let i = 0; i < numCols; i++) {
         let column = [];
         for (let k = 0; k < numRows; k++) {
             column.push(new Matrix({ i, k, numCols, numRows }));
         }
-        //this kind of goes against the mental model of a 2d grid because we push each column onto the entire column list
         columns.push(column);
     }
-    //intialize heads, speeds and counter arrs to empty finite value to match numCols - this syncs the state
+    //intialize heads arrs to empty finite value to match numCols 
     heads = Array(numCols);
     headSpeeds = Array(numCols);
     headFrameCounter = Array(numCols);
-    //initialize head values on start with randpm nums to be updated in draw loop
+    //initialize head values on start with rand nums to be updated in draw loop
     for (let i = 0; i < heads.length; i++) {
         heads[i] = int(random(0, numRows));
-        headSpeeds[i] = int(random(1, 3));
+        headSpeeds[i] = int(random(1, 5));
         headFrameCounter[i] = headSpeeds[i];
     }
 }
@@ -72,7 +72,9 @@ function draw() {
         }
         //create a nested forloop to run for every row that gives access to the 2d array
         for (let k = 0; k < numRows; k++) {
+
             let matrix = columns[i][k];
+
             //check to see if the head value is the current row and if it is then toggle the alpha
             if (heads[i] === k) {
                 matrix.display(1);
@@ -85,12 +87,23 @@ function draw() {
                 let y = matrix.y;
                 //some fun pythagorean theorem to calculate distance offset
                 let dist = sqrt((mouseX - x) * (mouseX - x) + (mouseY - y) * (mouseY - y))
-                //create a lerped value for setting the size of the cirlce
-                let constrainAmount = constrain(dist / (height / 3), 0, 1);
+                //create a lerped value for managin the size of the cirlce
+                let constrainAmount = constrain(dist / (height / 4), 0, 1);
                 //set the current matrix's alpha to a sloped value adjusting for the virus effect 
-                matrix.alpha = lerp(1, matrix.alpha, constrainAmount);
+                matrix.alpha = lerp(random(0.3, 1), matrix.alpha, constrainAmount);
+                matrix.alpha += random(0, 0.1);
             }
+
+            if (random(0, 1) < .3 && matrix.alpha > 0.93) {
+                matrix.alpha = 1;
+                let direction = 1 - 2 * int(random(0, 2));
+                if (k + 1 < numRows - 1 && i + 1 < numCols && i - 1 > 1) {
+                    columns[i + direction][k + 1].alpha = 1;
+                }
+            }
+
         }
     }
 
 }
+
