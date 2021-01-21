@@ -14,8 +14,7 @@
 //actual container of stacked matrix code
 let columns = [];
 //scale factor that loops are derived from
-let numCols;
-let numRows;
+let numCols, numRows;
 //container of items to represent first/white characters
 let heads = [];
 //mapped to first/white characters to control speed
@@ -23,8 +22,6 @@ let headSpeeds = [];
 //frame counter to keep track of head speed
 let headFrameCounter = [];
 
-//simple flag for toggeling clicked hole effect
-let clicked = false;
 
 //p5 method invoked on start
 function setup() {
@@ -32,7 +29,7 @@ function setup() {
     frameRate(12);
     //set size of canvas to 825 for best viewing experience
     createCanvas(windowWidth, windowHeight);
-    //how many columns/rows of matrix grid
+    //sets how many columns/rows of matrix grid
     numCols = 60;
     numRows = 80;
     //create nested loop to create grid of matrix on start
@@ -41,13 +38,14 @@ function setup() {
         for (let k = 0; k < numRows; k++) {
             column.push(new Matrix({ i, k, numCols, numRows }));
         }
+        //this kind of goes against the mental model of a 2d grid because we push each column onto the entire column list
         columns.push(column);
     }
-    //intialize heads arrs to empty finite value to match numCols 
+    //intialize heads, speeds and counter arrs to empty finite value to match numCols - this syncs the state
     heads = Array(numCols);
     headSpeeds = Array(numCols);
     headFrameCounter = Array(numCols);
-    //initialize head values on start with rand nums to be updated in draw loop
+    //initialize head values on start with randpm nums to be updated in draw loop
     for (let i = 0; i < heads.length; i++) {
         heads[i] = int(random(0, numRows));
         headSpeeds[i] = int(random(1, 3));
@@ -82,12 +80,12 @@ function draw() {
                 matrix.display(0);
             }
             //simple flag to toggle on virus mode 0_o
-            if (clicked) {
+            if (mouseIsPressed) {
                 let x = matrix.x;
                 let y = matrix.y;
                 //some fun pythagorean theorem to calculate distance offset
                 let dist = sqrt((mouseX - x) * (mouseX - x) + (mouseY - y) * (mouseY - y))
-                //create a lerped value for managin the size of the cirlce
+                //create a lerped value for setting the size of the cirlce
                 let constrainAmount = constrain(dist / (height / 3), 0, 1);
                 //set the current matrix's alpha to a sloped value adjusting for the virus effect 
                 matrix.alpha = lerp(1, matrix.alpha, constrainAmount);
@@ -95,15 +93,4 @@ function draw() {
         }
     }
 
-}
-
-//p5 exposed method for handling click
-function mouseClicked() {
-    //toggle the boolean
-    clicked = !clicked;
-    //used to have another for loop to manage clicked virus effect but then moved into draw loop
-    //to reduce computation because well... DRY
-
-    // prevent default (just some dom related stuff)
-    return false;
 }
