@@ -31,7 +31,7 @@ function setup() {
     //set global framerate for canvas
     frameRate(12);
     //set size of canvas to 825 for best viewing experience
-    createCanvas(825, windowHeight);
+    createCanvas(windowWidth, windowHeight);
     //how many columns/rows of matrix grid
     numCols = 60;
     numRows = 80;
@@ -50,7 +50,7 @@ function setup() {
     //initialize head values on start with rand nums to be updated in draw loop
     for (let i = 0; i < heads.length; i++) {
         heads[i] = int(random(0, numRows));
-        headSpeeds[i] = int(random(1, 5));
+        headSpeeds[i] = int(random(1, 3));
         headFrameCounter[i] = headSpeeds[i];
     }
 }
@@ -88,7 +88,7 @@ function draw() {
                 //some fun pythagorean theorem to calculate distance offset
                 let dist = sqrt((mouseX - x) * (mouseX - x) + (mouseY - y) * (mouseY - y))
                 //create a lerped value for managin the size of the cirlce
-                let constrainAmount = constrain(dist / (height / 2), 0, 1);
+                let constrainAmount = constrain(dist / (height / 3), 0, 1);
                 //set the current matrix's alpha to a sloped value adjusting for the virus effect 
                 matrix.alpha = lerp(1, matrix.alpha, constrainAmount);
             }
